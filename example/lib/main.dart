@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -60,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Container(
                 padding: EdgeInsets.only(top: 15),
-                child: RaisedButton(
+                child: ElevatedButton(
                   onPressed: _saveScreen,
                   child: Text("Save Local Image"),
                 ),
@@ -69,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Container(
                 padding: EdgeInsets.only(top: 15),
-                child: RaisedButton(
+                child: ElevatedButton(
                   onPressed: _getHttp,
                   child: Text("Save network image"),
                 ),
@@ -78,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Container(
                 padding: EdgeInsets.only(top: 15),
-                child: RaisedButton(
+                child: ElevatedButton(
                   onPressed: _saveVideo,
                   child: Text("Save network video"),
                 ),
@@ -87,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Container(
                 padding: EdgeInsets.only(top: 15),
-                child: RaisedButton(
+                child: ElevatedButton(
                   onPressed: _saveGif,
                   child: Text("Save Gif to gallery"),
                 ),
