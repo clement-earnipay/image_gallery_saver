@@ -6,33 +6,31 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Environment
 import android.os.Build
+import android.os.Environment
 import android.provider.MediaStore
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 import android.text.TextUtils
 import android.webkit.MimeTypeMap
 
-
 class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
     private var applicationContext: Context? = null
     private var methodChannel: MethodChannel? = null
 
-
+    // This is no longer needed as we are using onAttachedToEngine() for Flutter embedding v2
     companion object {
         @JvmStatic
         fun registerWith(registrar: Registrar) {
-            val instance = ImageGallerySaverPlugin()
-            instance.onAttachedToEngine(registrar.context(), registrar.messenger())
+            // This is no longer used in embedding v2
         }
     }
 
@@ -52,13 +50,11 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
             }
             else -> result.notImplemented()
         }
-
     }
-
 
     private fun generateUri(extension: String = "", name: String? = null): Uri {
         var fileName = name ?: System.currentTimeMillis().toString()
-        
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             var uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
@@ -139,21 +135,16 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        onAttachedToEngine(binding.applicationContext, binding.binaryMessenger)
+        applicationContext = binding.applicationContext
+        methodChannel = MethodChannel(binding.binaryMessenger, "image_gallery_saver")
+        methodChannel!!.setMethodCallHandler(this)
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         applicationContext = null
-        methodChannel!!.setMethodCallHandler(null);
-        methodChannel = null;
+        methodChannel!!.setMethodCallHandler(null)
+        methodChannel = null
     }
-
-    private fun onAttachedToEngine(applicationContext: Context, messenger: BinaryMessenger) {
-        this.applicationContext = applicationContext
-        methodChannel = MethodChannel(messenger, "image_gallery_saver")
-        methodChannel!!.setMethodCallHandler(this)
-    }
-
 }
 
 class SaveResultModel(var isSuccess: Boolean,
