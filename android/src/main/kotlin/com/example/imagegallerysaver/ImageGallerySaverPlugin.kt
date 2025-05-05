@@ -10,7 +10,6 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import io.flutter.embedding.engine.plugins.FlutterPlugin
-import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -25,14 +24,6 @@ import android.webkit.MimeTypeMap
 class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
     private var applicationContext: Context? = null
     private var methodChannel: MethodChannel? = null
-
-    // This is no longer needed as we are using onAttachedToEngine() for Flutter embedding v2
-    companion object {
-        @JvmStatic
-        fun registerWith(registrar: Registrar) {
-            // This is no longer used in embedding v2
-        }
-    }
 
     override fun onMethodCall(call: MethodCall, result: Result): Unit {
         when {
@@ -134,12 +125,14 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
         }
     }
 
+    // This is where we attach the plugin to the Flutter engine.
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         applicationContext = binding.applicationContext
         methodChannel = MethodChannel(binding.binaryMessenger, "image_gallery_saver")
         methodChannel!!.setMethodCallHandler(this)
     }
 
+    // This is where we detach the plugin from the Flutter engine.
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         applicationContext = null
         methodChannel!!.setMethodCallHandler(null)
